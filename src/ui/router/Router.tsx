@@ -9,6 +9,11 @@ import Logo from "@assets/img/logos/e-diaristas-logo.png";
 
 const Stack = createStackNavigator();
 
+export type RootStackParamList = {
+  Index: undefined;
+  EncontrarDiaristas: undefined;
+};
+
 const Router: React.FC = () => {
   return (
     <NavigationContainer theme={NavigationTheme}>
