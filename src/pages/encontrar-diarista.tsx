@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@emotion/react";
 import { ScrollView } from "react-native";
 import PageTitle from "ui/components/data-display/PageTitle/PageTitle";
@@ -13,27 +13,36 @@ import {
   ResponseContainer,
 } from "@styles/pages/encontrar-diaristas.styled";
 import useIndex from "data/hooks/pages/useIndex.page";
+import useEncontrarDiarista from "data/hooks/pages/useEncontrarDiarista.page.mobile";
 
-const EcontrarDiaristas: React.FC = () => {
+const EncontrarDiaristas: React.FC = () => {
   const { colors } = useTheme();
   const {
-    cep,
-    setCep,
-    cepValido,
-    buscarProfissionais,
-    erro,
-    diaristas,
-    buscaFeita,
-    carregando,
-    diaristasRestantes,
-  } = useIndex();
+      cep,
+      setCep,
+      cepValido,
+      buscarProfissionais,
+      erro,
+      buscaFeita,
+      carregando,
+      diaristasRestantes,
+      diaristas,
+    } = useIndex(),
+    { cepAutomatico } = useEncontrarDiarista();
+
+  useEffect(() => {
+    if (cepAutomatico && !cep) {
+      setCep(cepAutomatico);
+      buscarProfissionais(cepAutomatico);
+    }
+  }, [cepAutomatico]);
 
   return (
     <ScrollView>
       <PageTitle
         title={"Conheça os profissionais"}
         subtitle={
-          "Preencha seu endereço e veja todos os profissionais da rua localidade"
+          "Preencha seu endereço e veja todos os profissionais da sua localidade"
         }
       />
 
@@ -42,10 +51,12 @@ const EcontrarDiaristas: React.FC = () => {
           value={cep}
           onChangeText={setCep}
           type={"custom"}
-          options={{ mask: "99.999-999" }}
+          options={{
+            mask: "99.999-999",
+          }}
           customTextInput={TextInput}
           customTextInputProps={{
-            label: "Digite seu cep",
+            label: "Digite seu CEP",
           }}
         />
 
@@ -79,14 +90,14 @@ const EcontrarDiaristas: React.FC = () => {
 
             {diaristasRestantes > 0 && (
               <TextContainer>
-                ... e mais {diaristasRestantes}
-                {""}
+                ...e mais {diaristasRestantes}{" "}
                 {diaristasRestantes > 1
                   ? "profissionais atendem"
                   : "profissional atende"}{" "}
-                {""}ao seu endereço.
+                ao seu endereço.
               </TextContainer>
             )}
+
             <Button color={colors.accent} mode={"contained"}>
               Contratar um profissional
             </Button>
@@ -100,4 +111,4 @@ const EcontrarDiaristas: React.FC = () => {
   );
 };
 
-export default EcontrarDiaristas;
+export default EncontrarDiaristas;
